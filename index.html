@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Realtime communication with WebRTC</title>
+
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .player_wrapper{
+      position: relative;
+      max-width: 960px;
+      width: 100%;
+    }
+    body.vjs-full-window .player_wrapper{
+      position: static;
+    }
+    .player_container{
+      padding-top: 56.25%;
+    }
+    #videojs-panorama-player{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+    .video{
+      autoplay: autoplay;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Realtime broadcast with WebRTC</h1>
+
+  <div class="player_wrapper">
+    <div class="player_container">
+      <video id="videojs-panorama-player" class="video-js vjs-default-skin" controls autoplay></video>
+    </div>
+  </div>
+  <br>
+  <a href="guide.html">User Guide</a>
+
+
+  <!-- This file is automatically added/served when running "node index.js". -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- js for videojs-panorama -->
+  <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <script src="node_modules/video.js/dist/video.js"></script>
+  <script src="node_modules/three/build/three.js"></script>
+  <link href="node_modules/videojs-panorama/dist/videojs-panorama.css">
+  <script src="node_modules/videojs-panorama/dist/videojs-panorama.v5.min.js"></script>
+  <script>
+    (function(window, videojs) {
+      var isVR = !!(navigator.getVRDisplays);
+      console.log('isVR: ' + isVR);
+      var player = window.player = videojs('videojs-panorama-player', {}, function () {
+        window.addEventListener("resize", function() {
+          var canvas = player.getChild('Canvas');
+          if(canvas) canvas.handleResize();
+        });
+      });
+      if (isVR) {
+      } else {
+      var videoElement = document.getElementById("videojs-panorama-player");
+      var width = videoElement.offsetWidth;
+      var height = videoElement.offsetHeight;
+      player.width(width), player.height(height);
+      player.panorama({
+        clickAndDrag: true,
+        backToVerticalCenter: false,
+        backToHorizonCenter: false,
+        autoMobileOrientation: true,
+        VREnable: true,
+        initFov: 100,
+        callback: function() {
+          player.play();
+        }
+      });
+      }
+    }(window, window.videojs));
+  </script>
+  
+</body>
+
+</html>
